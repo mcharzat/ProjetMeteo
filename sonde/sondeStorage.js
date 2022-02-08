@@ -94,7 +94,7 @@ function loop () {
 
 chokidar.watch('/dev/shm/rainCounter.log').on('change', (event, path) => {
     
-    fs.readFile(path, 'utf8' , (err, data) => {
+    fs.readFile('/dev/shm/rainCounter.log', 'utf8' , (err, data) => {
         if (err) {
           console.error(err)
           return
