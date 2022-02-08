@@ -49,12 +49,14 @@ const influx = new Influx.InfluxDB({
 })
 
 /* GET  */
-router.get('/:parameterMeteo/:dateBegin,:dateEnd', function(req, res, next) {
-    let paramMeteo = req.params.parameterMeteo.split(",")
+router.get('/:parameterMeteo/:date', function(req, res, next) {
+    let paramMeteo = req.params.parameterMeteo.split(",");
+    let unixDateBegin = new Date(req.params.date.split(',')[0]).getTime();
+    let unixDateEnd = new Date(req.params.date.split(',')[1]).getTime();
     paramMeteo.forEach(parametres => {
         influx.query(`
-        select * from tide
-        where time =~ /(?i)(${place})/
+        select * from ${parametres}
+        where time <= ${unixDateBegin} and time >= ${unixDateBegin} 
     `)
     .then( result => response.status(200).json(result) )
     .catch( error => response.status(500).json({ error }) );
