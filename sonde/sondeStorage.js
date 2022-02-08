@@ -2,69 +2,72 @@ const fs = require('fs');
 const Influx = require('influx');
 const chokidar = require('chokidar');
 
-let countRain = 0;
+// Connect to db
+
+const influx = new Influx.InfluxDB({
+    host: 'localhost',
+    database: 'meteoDB',
+    schema: [
+        {
+            measurement: 'temperature',
+            fields: { value: Influx.FieldType.FLOAT },
+            tags: ['unit', 'source']
+        },
+        {
+            measurement: 'pressure',
+            fields: { value: Influx.FieldType.FLOAT },
+            tags: ['unit', 'source']
+        },
+        {
+            measurement: 'hygrometry',
+            fields: { value: Influx.FieldType.FLOAT },
+            tags: ['unit', 'source']
+        },
+        {
+            measurement: 'luminosity',
+            fields: { value: Influx.FieldType.FLOAT },
+            tags: ['unit', 'source']
+        },
+        {
+            measurement: 'wind_heading',
+            fields: { value: Influx.FieldType.FLOAT },
+            tags: ['unit', 'source']
+        },
+        {
+            measurement: 'wind_speed_avg',
+            fields: { value: Influx.FieldType.FLOAT },
+            tags: ['unit', 'source']
+        },
+        {
+            measurement: 'wind_speed_max',
+            fields: { value: Influx.FieldType.FLOAT },
+            tags: ['unit', 'source']
+        },
+        {
+            measurement: 'wind_speed_min',
+            fields: { value: Influx.FieldType.FLOAT },
+            tags: ['unit', 'source']
+        },
+        {
+            measurement: 'rainfall',
+            fields: { value: Influx.FieldType.FLOAT },
+            tags: ['unit', 'source']
+        }
+    ]
+})
 
 function loop () {
-    // Connect to db
-
-    const influx = new Influx.InfluxDB({
-        host: 'localhost:8088',
-        database: 'meteoDB',
-        schema: [
-            {
-                measurement: 'temperature',
-                fields: { value: Influx.FieldType.FLOAT },
-                tags: ['unit', 'source']
-            },
-            {
-                measurement: 'pressure',
-                fields: { value: Influx.FieldType.FLOAT },
-                tags: ['unit', 'source']
-            },
-            {
-                measurement: 'hygrometry',
-                fields: { value: Influx.FieldType.FLOAT },
-                tags: ['unit', 'source']
-            },
-            {
-                measurement: 'luminosity',
-                fields: { value: Influx.FieldType.FLOAT },
-                tags: ['unit', 'source']
-            },
-            {
-                measurement: 'wind_heading',
-                fields: { value: Influx.FieldType.FLOAT },
-                tags: ['unit', 'source']
-            },
-            {
-                measurement: 'wind_speed_avg',
-                fields: { value: Influx.FieldType.FLOAT },
-                tags: ['unit', 'source']
-            },
-            {
-                measurement: 'wind_speed_max',
-                fields: { value: Influx.FieldType.FLOAT },
-                tags: ['unit', 'source']
-            },
-            {
-                measurement: 'wind_speed_min',
-                fields: { value: Influx.FieldType.FLOAT },
-                tags: ['unit', 'source']
-            },
-        ]
-    })
 
     // Retrieve data
-    setInterval( function () {
+    setTimeout( function () {
         fs.readFile('/dev/shm/sensors', 'utf8' , (err, data) => {
             if (err) {
               console.error(err)
               return
             }
-            dataJson = data.json();
-            console.log(dataJson);
+            dataJson = JSON.parse(data);
 
-            dataJson['measure'].array.forEach(measure => {
+            dataJson.measure.forEach(measure => {
                 influx.writePoints([
                     {
                       measurement: measure.name,
@@ -73,26 +76,46 @@ function loop () {
                         source: "piensg031",
                       },
                       fields: { value: measure.value },
-                      timestamp: dataJson.date,
+                      timestamp: new Date(dataJson.date).getTime(),
                     }
                 ], {
                     database: 'meteoDB',
-                    precision: 's',
+                    precision: 'ms',
                 })
                   .catch(error => {
-                    console.error(`Error saving data to InfluxDB! ${err.stack}`)
+                    console.error(`Error saving data to InfluxDB! ${error.stack}`)
                 });
             });
             
-
-            countRain = 0;
           })
-    }, 60);
+    }, 60000);
 }
 
 chokidar.watch('/dev/shm/rainCounter.log').on('change', (event, path) => {
-    console.log(countRain);
-    countRain += 1;
-  });
+    
+    fs.readFile('/dev/shm/rainCounter.log', 'utf8' , (err, data) => {
+        if (err) {
+          console.error(err)
+          return
+        }
+        influx.writePoints([
+            {
+              measurement: "rainfall",
+              tags: {
+                unit: 'mL',
+                source: "piensg031",
+              },
+              fields: { value:  3.8},
+              timestamp: new Date(data.replace("\n", "")).getTime(),
+            }
+        ], {
+            database: 'meteoDB',
+            precision: 'ms',
+        })
+          .catch(error => {
+            console.error(`Error saving data to InfluxDB! ${error.stack}`)
+        });
+    });
+});
 
 loop()
