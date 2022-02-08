@@ -66,7 +66,6 @@ function loop () {
               return
             }
             dataJson = JSON.parse(data);
-            console.log(dataJson);
 
             dataJson.measure.forEach(measure => {
                 influx.writePoints([
