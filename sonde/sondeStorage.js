@@ -94,7 +94,7 @@ function loop () {
             });
             
         });
-        fs.readFile('/dev/shm/gpsnmea', 'utf8' , (err, dataRaw) => {
+        fs.readFile('/dev/shm/gpsNmea', 'utf8' , (err, dataRaw) => {
             if (err) {
               console.error(err)
               return
