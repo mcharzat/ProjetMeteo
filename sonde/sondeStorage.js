@@ -101,7 +101,7 @@ chokidar.watch('/dev/shm/rainCounter.log').on('change', (event, path) => {
         }
         influx.writePoints([
             {
-              measurement: rainfall,
+              measurement: "rainfall",
               tags: {
                 unit: 'mL',
                 source: "piensg031",
