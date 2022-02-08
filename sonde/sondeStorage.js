@@ -1,6 +1,7 @@
 const fs = require('fs');
 const Influx = require('influx');
 const chokidar = require('chokidar');
+const nmea = require('@drivetech/node-nmea');
 
 // Connect to db
 
@@ -52,6 +53,11 @@ const influx = new Influx.InfluxDB({
             measurement: 'rainfall',
             fields: { value: Influx.FieldType.FLOAT },
             tags: ['unit', 'source']
+        },
+        {
+            measurement: 'GPSposition',
+            fields: { latitude: Influx.FieldType.STRING , longitude: Influx.FieldType.STRING },
+            tags: ['unit', 'source']
         }
     ]
 })
@@ -59,7 +65,7 @@ const influx = new Influx.InfluxDB({
 function loop () {
 
     // Retrieve data
-    setTimeout( function () {
+    setInterval( function () {
         fs.readFile('/dev/shm/sensors', 'utf8' , (err, data) => {
             if (err) {
               console.error(err)
@@ -87,7 +93,37 @@ function loop () {
                 });
             });
             
-          })
+        });
+        fs.readFile('/dev/shm/gpsnmea', 'utf8' , (err, dataRaw) => {
+            if (err) {
+              console.error(err)
+              return
+            }
+
+            data = nmea.parse(dataRaw.split("\n")[1]);
+
+            influx.writePoints([
+                {
+                    measurement: "GPSposition",
+                    tags: {
+                    unit: "°",
+                    source: "piensg031",
+                    },
+                    fields: { 
+                        latitude: data.loc['geojson'].coordinates[0],
+                        latitude: data.loc['geojson'].coordinates[1]
+                    },
+                    timestamp: new Date(data.datetime).getTime(),
+                }
+            ], {
+                database: 'meteoDB',
+                precision: 'ms',
+            })
+                .catch(error => {
+                console.error(`Error saving data to InfluxDB! ${error.stack}`)
+            });
+            
+        })
     }, 60000);
 }
 
