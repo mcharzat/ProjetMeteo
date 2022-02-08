@@ -111,7 +111,7 @@ function loop () {
                     },
                     fields: { 
                         latitude: data.loc['geojson'].coordinates[0],
-                        latitude: data.loc['geojson'].coordinates[1]
+                        longitude: data.loc['geojson'].coordinates[1]
                     },
                     timestamp: new Date(data.datetime).getTime(),
                 }
