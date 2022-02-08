@@ -1,8 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
+const Influx = require('influx');
+
+
 const influx = new Influx.InfluxDB({
-    host: 'localhost:8088',
+    host: 'localhost',
     database: 'meteoDB',
     schema: [
         {
@@ -48,20 +51,10 @@ const influx = new Influx.InfluxDB({
     ]
 })
 
+
 /* GET  */
 router.get('/:parameterMeteo/:date', function(req, res, next) {
-    let paramMeteo = req.params.parameterMeteo.split(",");
-    let unixDateBegin = new Date(req.params.date.split(',')[0]).getTime();
-    let unixDateEnd = new Date(req.params.date.split(',')[1]).getTime();
-    paramMeteo.forEach(parametres => {
-        influx.query(`
-        select * from ${parametres}
-        where time <= ${unixDateBegin} and time >= ${unixDateBegin} 
-    `)
-    .then( result => response.status(200).json(result) )
-    .catch( error => response.status(500).json({ error }) );
-    });
-    
+ 
 });
 
 /* GET  */
@@ -71,7 +64,41 @@ router.get('/:parameterMeteo/:dateBegin', function(req, res, next) {
 
 /* GET  */
 router.get('/:parameterMeteo', function(req, res, next) {
-  
+    let paramMeteo = req.params.parameterMeteo.split(",").map(x => x.toLowerCase());
+    
+    const reponse = {};
+    const promises = [];
+    paramMeteo.forEach(parametres => {
+        reponse[parametres] = {Date:[],Value:[]};
+        promises.push(
+            influx.query(`
+            select * from ${parametres}
+            `)
+          )
+    })
+
+    Promise.all(promises).then(promesses => {
+        compteur = 0
+
+        promesses.forEach(promesse => {
+            console.log(promesse.length)
+            for(i=0;i<promesse.length;i++){
+                console.log(promesse[i].time._nanoISO)
+                reponse[paramMeteo[compteur]].Date.push(promesse[i].time);
+                reponse[paramMeteo[compteur]].Value.push(promesse[i].value);
+            }
+            console.log(reponse)
+            compteur++;
+        })
+
+        res.send(reponse)
+        
+    })
+   
 });
 
+/* GET users listing. */
+router.get('/', function(req, res, next) {
+    res.send('respond with a resource');
+  });
 module.exports = router;
