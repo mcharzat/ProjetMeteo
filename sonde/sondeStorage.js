@@ -107,7 +107,7 @@ chokidar.watch('/dev/shm/rainCounter.log').on('change', (event, path) => {
                 source: "piensg031",
               },
               fields: { value:  3.8},
-              timestamp: new Date(data).getTime(),
+              timestamp: new Date(data.replace("\n", "")).getTime(),
             }
         ], {
             database: 'meteoDB',
