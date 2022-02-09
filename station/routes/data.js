@@ -52,13 +52,65 @@ const influx = new Influx.InfluxDB({
 })
 
 
-/* GET  */
-router.get('/:parameterMeteo/:date', function(req, res, next) {
+// /* GET  */
+// router.get('/:parameterMeteo/:date', function(req, res, next) {
  
-});
+// });
 
 /* GET  */
-router.get('/:parameterMeteo/:dateBegin', function(req, res, next) {
+router.get('/:parameterMeteo/:date', function(req, res, next) {
+
+    let paramMeteo = req.params.parameterMeteo.split(",").map(x => x.toLowerCase());
+
+    let datesUnix = req.params.date.split(",").map(x => new Date(x).getTime()*1000000);
+
+    const reponse = {};
+    const promises = [];
+
+    if(datesUnix.length == 1){
+        console.log(datesUnix[0])
+        paramMeteo.forEach(parametres => {
+            reponse[parametres] = {Date:[],Value:[]};
+            promises.push(
+                influx.query(`
+                select * from ${parametres}
+                where time >=${datesUnix[0]}
+                `)
+              )
+        })
+        console.log("ok2")
+    } else {
+        paramMeteo.forEach(parametres => {
+            console.log(datesUnix[0], datesUnix[1])
+            reponse[parametres] = {Date:[],Value:[]};
+            promises.push(
+                influx.query(`
+                select * from ${parametres}
+                where time >=${datesUnix[0]} and time <= ${datesUnix[1]}
+                `)
+              )
+        })
+        console.log("ok1")
+    }
+    
+
+    Promise.all(promises).then(promesses => {
+        compteur = 0
+
+        promesses.forEach(promesse => {
+            console.log(promesse.length)
+            for(i=0;i<promesse.length;i++){
+                console.log(promesse[i].time.getNanoTime())
+                reponse[paramMeteo[compteur]].Date.push(promesse[i].time._nanoISO);
+                reponse[paramMeteo[compteur]].Value.push(promesse[i].value);
+            }
+            console.log(reponse)
+            compteur++;
+        })
+
+        res.send(reponse)
+        
+    })
   
 });
 
@@ -84,7 +136,7 @@ router.get('/:parameterMeteo', function(req, res, next) {
             console.log(promesse.length)
             for(i=0;i<promesse.length;i++){
                 console.log(promesse[i].time._nanoISO)
-                reponse[paramMeteo[compteur]].Date.push(promesse[i].time);
+                reponse[paramMeteo[compteur]].Date.push(promesse[i].time._nanoISO);
                 reponse[paramMeteo[compteur]].Value.push(promesse[i].value);
             }
             console.log(reponse)
@@ -101,4 +153,5 @@ router.get('/:parameterMeteo', function(req, res, next) {
 router.get('/', function(req, res, next) {
     res.send('respond with a resource');
   });
+
 module.exports = router;
