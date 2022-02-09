@@ -198,6 +198,8 @@ router.get('/:parameterMeteo', function(req, res, next) {
             promises.push(
             influx.query(`
             select * from ${parametre}
+            order by time desc
+            limit 1
             `)
           )
         }
