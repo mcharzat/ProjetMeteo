@@ -177,14 +177,18 @@ router.get('/:parameterMeteo', function(req, res, next) {
             promises.push(
             influx.query(`
             select * from ${parametre}
+            order by time desc
+            limit 1
             `)
           )
         }
          else if(parametres == "gpsposition"){
             reponse[parametres] = {date:[],value:[]};
             promises.push(
-            influx.query(`
-            select * from GPSposition
+                influx.query(`
+                select * from GPSposition
+                order by time desc
+                limit 1
             `)
           )
         } else{
@@ -192,6 +196,8 @@ router.get('/:parameterMeteo', function(req, res, next) {
             promises.push(
                 influx.query(`
                 select * from ${parametres}
+                order by time desc
+                limit 1
                 `)
             )
         }
