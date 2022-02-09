@@ -69,6 +69,16 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
 
     if(datesUnix.length == 1){
         paramMeteo.forEach(parametres => {
+            if(parametres == "hygrometry"){
+                parametre = "humidity"
+                reponse[parametres] = {date:[],value:[]};
+                promises.push(
+                influx.query(`
+                select * from ${parametre}
+                where time >=${datesUnix[0]}
+                `)
+              )
+            }
             if(parametres == "winddirection"){
                 parametre = "wind_heading"
                 reponse[parametres] = {date:[],value:[]};
@@ -100,6 +110,16 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
 
     } else {
         paramMeteo.forEach(parametres => {
+            if(parametres == "hygrometry"){
+                parametre = "humidity"
+                reponse[parametres] = {date:[],value:[]};
+                promises.push(
+                influx.query(`
+                select * from ${parametre}
+                where time >=${datesUnix[0]} and time <= ${datesUnix[1]}
+                `)
+              )
+            }
             if(parametres == "winddirection"){
                 parametre = "wind_heading"
                 reponse[parametres] = {date:[],value:[]};
@@ -171,6 +191,17 @@ router.get('/:parameterMeteo', function(req, res, next) {
     const reponse = {};
     const promises = [];
     paramMeteo.forEach(parametres => {
+
+        if(parametres == "hygrometry"){
+            parametre = "humidity"
+            reponse[parametres] = {date:[],value:[]};
+            promises.push(
+            influx.query(`
+            select * from ${parametre}
+            `)
+          )
+        }
+        
         if(parametres == "winddirection"){
             parametre = "wind_heading"
             reponse[parametres] = {date:[],value:[]};
