@@ -71,7 +71,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
         paramMeteo.forEach(parametres => {
             if(parametres == "winddirection"){
                 parametre = "wind_heading"
-                reponse[parametres] = {Date:[],Value:[]};
+                reponse[parametres] = {date:[],value:[]};
                 promises.push(
                 influx.query(`
                 select * from ${parametre}
@@ -80,7 +80,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
               )
             }
             else if(parametres == "gpsposition"){
-                reponse[parametres] = {Date:[],Value:[]};
+                reponse[parametres] = {date:[],value:[]};
                 promises.push(
                 influx.query(`
                 select * from GPSposition
@@ -88,7 +88,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
                 `)
               )
             } else{
-                reponse[parametres] = {Date:[],Value:[]};
+                reponse[parametres] = {date:[],value:[]};
                 promises.push(
                     influx.query(`
                     select * from ${parametres}
@@ -102,7 +102,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
         paramMeteo.forEach(parametres => {
             if(parametres == "winddirection"){
                 parametre = "wind_heading"
-                reponse[parametres] = {Date:[],Value:[]};
+                reponse[parametres] = {date:[],value:[]};
                 promises.push(
                 influx.query(`
                 select * from ${parametre}
@@ -111,7 +111,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
               )
             }
              else if(parametres == "gpsposition"){
-                reponse[parametres] = {Date:[],Value:[]};
+                reponse[parametres] = {date:[],value:[]};
                 promises.push(
                 influx.query(`
                 select * from GPSposition
@@ -119,7 +119,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
                 `)
               )
             } else{
-                reponse[parametres] = {Date:[],Value:[]};
+                reponse[parametres] = {date:[],value:[]};
                 promises.push(
                     influx.query(`
                     select * from ${parametres}
@@ -138,18 +138,18 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
         promesses.forEach(promesse => {
             if(keys[compteur]=="windvelocity"){
                 for(i=0;i<promesse.length;i++){
-                    reponse[paramMeteo[compteur]].Date.push(promesse[i].time._nanoISO);
-                    reponse[paramMeteo[compteur]].Value.push({Average: promesse[i].wind_speed_avg,Min: promesse[i].wind_speed_min,min: promesse[i].wind_speed_max});
+                    reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
+                    reponse[paramMeteo[compteur]].value.push({avg: promesse[i].wind_speed_avg,min: promesse[i].wind_speed_min,max: promesse[i].wind_speed_max});
                 }
             } else if(keys[compteur]=="gpsposition"){
                 for(i=0;i<promesse.length;i++){
-                    reponse[paramMeteo[compteur]].Date.push(promesse[i].time._nanoISO);
-                    reponse[paramMeteo[compteur]].Value.push({latitude: promesse[i].latitude,longitude : promesse[i].longitude});
+                    reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
+                    reponse[paramMeteo[compteur]].value.push({lat: promesse[i].latitude,lon : promesse[i].longitude, alt: 0});
                 }
             } else{
                 for(i=0;i<promesse.length;i++){
-                    reponse[paramMeteo[compteur]].Date.push(promesse[i].time._nanoISO);
-                    reponse[paramMeteo[compteur]].Value.push(promesse[i].value);
+                    reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
+                    reponse[paramMeteo[compteur]].value.push(promesse[i].value);
                 }
                 
             }
@@ -173,7 +173,7 @@ router.get('/:parameterMeteo', function(req, res, next) {
     paramMeteo.forEach(parametres => {
         if(parametres == "winddirection"){
             parametre = "wind_heading"
-            reponse[parametres] = {Date:[],Value:[]};
+            reponse[parametres] = {date:[],value:[]};
             promises.push(
             influx.query(`
             select * from ${parametre}
@@ -181,14 +181,14 @@ router.get('/:parameterMeteo', function(req, res, next) {
           )
         }
          else if(parametres == "gpsposition"){
-            reponse[parametres] = {Date:[],Value:[]};
+            reponse[parametres] = {date:[],value:[]};
             promises.push(
             influx.query(`
             select * from GPSposition
             `)
           )
         } else{
-            reponse[parametres] = {Date:[],Value:[]};
+            reponse[parametres] = {date:[],value:[]};
             promises.push(
                 influx.query(`
                 select * from ${parametres}
@@ -203,18 +203,18 @@ router.get('/:parameterMeteo', function(req, res, next) {
         promesses.forEach(promesse => {
             if(keys[compteur]=="windvelocity"){
                 for(i=0;i<promesse.length;i++){
-                    reponse[paramMeteo[compteur]].Date.push(promesse[i].time._nanoISO);
-                    reponse[paramMeteo[compteur]].Value.push({Average: promesse[i].wind_speed_avg,Min: promesse[i].wind_speed_min,min: promesse[i].wind_speed_max});
+                    reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
+                    reponse[paramMeteo[compteur]].value.push({avg: promesse[i].wind_speed_avg,min: promesse[i].wind_speed_min,max: promesse[i].wind_speed_max});
                 }
             } else if(keys[compteur]=="gpsposition"){
                 for(i=0;i<promesse.length;i++){
-                    reponse[paramMeteo[compteur]].Date.push(promesse[i].time._nanoISO);
-                    reponse[paramMeteo[compteur]].Value.push({latitude: promesse[i].latitude,longitude : promesse[i].longitude});
+                    reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
+                    reponse[paramMeteo[compteur]].value.push({latitude: promesse[i].latitude,lon : promesse[i].longitude,alt: 0});
                 }
             } else{
                 for(i=0;i<promesse.length;i++){
-                    reponse[paramMeteo[compteur]].Date.push(promesse[i].time._nanoISO);
-                    reponse[paramMeteo[compteur]].Value.push(promesse[i].value);
+                    reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
+                    reponse[paramMeteo[compteur]].value.push(promesse[i].value);
                 }
                 
             }
@@ -231,7 +231,7 @@ router.get('/:parameterMeteo', function(req, res, next) {
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
+    res.sendFile('public/documentation.html',{ root: __dirname+'/..'});
   });
 
 module.exports = router;
