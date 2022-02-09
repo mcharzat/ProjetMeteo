@@ -79,15 +79,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
                 `)
               )
             }
-            else if(parametres == "windvelocity"){
-                reponse[parametre] = {Date:[],Value:[]};
-                promises.push(
-                influx.query(`
-                select * from wind_speeding_avg,wind_speeding_max,wind_speeding_min,
-                where time >=${datesUnix[0]}
-                `)
-              )
-            } else if(parametres == "gpsposition"){
+            else if(parametres == "gpsposition"){
                 reponse[parametres] = {Date:[],Value:[]};
                 promises.push(
                 influx.query(`
@@ -118,15 +110,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
                 `)
               )
             }
-            else if(parametres == "windvelocity"){
-                reponse[parametre] = {Date:[],Value:[]};
-                promises.push(
-                influx.query(`
-                select * from wind_speeding_avg,wind_speeding_max,wind_speeding_min,
-                where time >=${datesUnix[0]} and time <= ${datesUnix[1]}
-                `)
-              )
-            } else if(parametres == "gpsposition"){
+             else if(parametres == "gpsposition"){
                 reponse[parametres] = {Date:[],Value:[]};
                 promises.push(
                 influx.query(`
@@ -153,10 +137,9 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
         let keys = Object.keys(reponse);
         promesses.forEach(promesse => {
             if(keys[compteur]=="windvelocity"){
-                for(i=0;i<promesse.length;i+=3){
-                    let windValue = [promesse[i],promesse[i+1],promesse[i+2]]
+                for(i=0;i<promesse.length;i++){
                     reponse[paramMeteo[compteur]].Date.push(promesse[i].time._nanoISO);
-                    reponse[paramMeteo[compteur]].Value.push(windValue);
+                    reponse[paramMeteo[compteur]].Value.push({Average: promesse[i].wind_speed_avg,Min: promesse[i].wind_speed_min,min: promesse[i].wind_speed_max});
                 }
             } else if(keys[compteur]=="gpsposition"){
                 for(i=0;i<promesse.length;i++){
@@ -197,14 +180,7 @@ router.get('/:parameterMeteo', function(req, res, next) {
             `)
           )
         }
-        else if(parametres == "windvelocity"){
-            reponse[parametre] = {Date:[],Value:[]};
-            promises.push(
-            influx.query(`
-            select * from wind_speeding_avg,wind_speeding_max,wind_speeding_min,
-            `)
-          )
-        } else if(parametres == "gpsposition"){
+         else if(parametres == "gpsposition"){
             reponse[parametres] = {Date:[],Value:[]};
             promises.push(
             influx.query(`
@@ -226,10 +202,9 @@ router.get('/:parameterMeteo', function(req, res, next) {
         let keys = Object.keys(reponse);
         promesses.forEach(promesse => {
             if(keys[compteur]=="windvelocity"){
-                for(i=0;i<promesse.length;i+=3){
-                    let windValue = [promesse[i],promesse[i+1],promesse[i+2]]
+                for(i=0;i<promesse.length;i++){
                     reponse[paramMeteo[compteur]].Date.push(promesse[i].time._nanoISO);
-                    reponse[paramMeteo[compteur]].Value.push(windValue);
+                    reponse[paramMeteo[compteur]].Value.push({Average: promesse[i].wind_speed_avg,Min: promesse[i].wind_speed_min,min: promesse[i].wind_speed_max});
                 }
             } else if(keys[compteur]=="gpsposition"){
                 for(i=0;i<promesse.length;i++){
