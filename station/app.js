@@ -8,6 +8,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dataRouter = require('./routes/data');
 
+var cors = require('cors')
+
 var app = express();
 
 // view engine setup
@@ -39,5 +41,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+//Allow CORS
+app.use(cors());
 
 module.exports = app;
