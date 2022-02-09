@@ -35,18 +35,12 @@ const influx = new Influx.InfluxDB({
             tags: ['unit', 'source']
         },
         {
-            measurement: 'wind_speed_avg',
-            fields: { value: Influx.FieldType.FLOAT },
-            tags: ['unit', 'source']
-        },
-        {
-            measurement: 'wind_speed_max',
-            fields: { value: Influx.FieldType.FLOAT },
-            tags: ['unit', 'source']
-        },
-        {
-            measurement: 'wind_speed_min',
-            fields: { value: Influx.FieldType.FLOAT },
+            measurement: 'windvelocity',
+            fields: { 
+                wind_speed_avg: Influx.FieldType.FLOAT,
+                wind_speed_max: Influx.FieldType.FLOAT,
+                wind_speed_min: Influx.FieldType.FLOAT
+            },
             tags: ['unit', 'source']
         },
         {
@@ -72,25 +66,69 @@ function loop () {
               return
             }
             dataJson = JSON.parse(data);
+            let min = false;
+            let max = false;
+            let avg = false;
+            let min_value;
+            let max_value;
+            let avg_value;
 
             dataJson.measure.forEach(measure => {
-                influx.writePoints([
-                    {
-                      measurement: measure.name,
-                      tags: {
-                        unit: measure.unit,
-                        source: "piensg031",
-                      },
-                      fields: { value: measure.value },
-                      timestamp: new Date(dataJson.date).getTime(),
+                if (measure.name.startsWith("wind_speed")) {
+                    if (measure.name.endsWith("avg")) {
+                        avg = true;
+                        avg_value = measure.value;
+                    } else if (measure.name.endsWith("min")) {
+                        min = true;
+                        min_value = measure.value;
+                    } else if (measure.name.endsWith("max")) {
+                        max = true;
+                        max_value = measure.value;
                     }
-                ], {
-                    database: 'meteoDB',
-                    precision: 'ms',
-                })
-                  .catch(error => {
-                    console.error(`Error saving data to InfluxDB! ${error.stack}`)
-                });
+                    if (avg && min && max) {
+                        influx.writePoints([
+                            {
+                            measurement: "windvelocity",
+                            tags: {
+                                unit: measure.unit,
+                                source: "piensg031",
+                            },
+                            fields: { 
+                                wind_speed_avg: avg_value,
+                                wind_speed_max: max_value,
+                                wind_speed_min: min_value
+                            },
+                            timestamp: new Date(dataJson.date).getTime(),
+                            }
+                        ], {
+                            database: 'meteoDB',
+                            precision: 'ms',
+                        })
+                        .catch(error => {
+                            console.error(`Error saving data to InfluxDB! ${error.stack}`)
+                        });
+                        avg = min = max = false;
+                    }
+                    
+                } else {
+                    influx.writePoints([
+                        {
+                          measurement: measure.name,
+                          tags: {
+                            unit: measure.unit,
+                            source: "piensg031",
+                          },
+                          fields: { value: measure.value },
+                          timestamp: new Date(dataJson.date).getTime(),
+                        }
+                    ], {
+                        database: 'meteoDB',
+                        precision: 'ms',
+                    })
+                      .catch(error => {
+                        console.error(`Error saving data to InfluxDB! ${error.stack}`)
+                    });
+                }
             });
             
         });
