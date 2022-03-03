@@ -79,7 +79,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
                 `)
               )
             }
-            if(parametres == "winddirection"){
+            else if(parametres == "winddirection"){
                 parametre = "wind_heading"
                 reponse[parametres] = {date:[],value:[]};
                 promises.push(
@@ -120,7 +120,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
                 `)
               )
             }
-            if(parametres == "winddirection"){
+            else if(parametres == "winddirection"){
                 parametre = "wind_heading"
                 reponse[parametres] = {date:[],value:[]};
                 promises.push(
@@ -130,7 +130,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
                 `)
               )
             }
-             else if(parametres == "gpsposition"){
+            else if(parametres == "gpsposition"){
                 reponse[parametres] = {date:[],value:[]};
                 promises.push(
                 influx.query(`
@@ -204,7 +204,7 @@ router.get('/:parameterMeteo', function(req, res, next) {
           )
         }
         
-        if(parametres == "winddirection"){
+        else if(parametres == "winddirection"){
             parametre = "wind_heading"
             reponse[parametres] = {date:[],value:[]};
             promises.push(
@@ -215,7 +215,7 @@ router.get('/:parameterMeteo', function(req, res, next) {
             `)
           )
         }
-         else if(parametres == "gpsposition"){
+        else if(parametres == "gpsposition"){
             reponse[parametres] = {date:[],value:[]};
             promises.push(
                 influx.query(`
