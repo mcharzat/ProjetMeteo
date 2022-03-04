@@ -9,7 +9,7 @@
             Overview
           </h6>
           <h2 class="text-white text-xl font-semibold">
-            Sales value
+            {{ chartTitle }}
           </h2>
         </div>
       </div>
@@ -17,7 +17,7 @@
     <div class="p-4 flex-auto">
       <!-- Chart -->
       <div class="relative h-350-px">
-        <canvas id="line-chart"></canvas>
+        <canvas :id="chartId"></canvas>
       </div>
     </div>
   </div>
@@ -26,12 +26,22 @@
 import Chart from "chart.js";
 
 export default {
-  mounted: function () {
-    this.$nextTick(function () {
-      var config = {
-        type: "line",
-        data: {
-          labels: [
+  props: {
+    chartId: {
+      type: String,
+      default: "line-chart",
+    },
+    measurement: {
+      type: String,
+      default: "Measure",
+    },
+    chartTitle: {
+      type: String,
+      default: "Chart",
+    },
+    chartTime: {
+      type: Array,
+      default: () => [
             "January",
             "February",
             "March",
@@ -40,20 +50,25 @@ export default {
             "June",
             "July",
           ],
+    },
+    chartData: {
+      type: Array,
+      default: () => [65, 78, 66, 44, 56, 67, 75],
+    }
+  },
+  mounted: function () {
+    this.$nextTick(function () {
+      var config = {
+        type: "line",
+        data: {
+          labels: this.chartTime,
           datasets: [
             {
-              label: new Date().getFullYear(),
+              label: this.measurement,
               backgroundColor: "#4c51bf",
               borderColor: "#4c51bf",
-              data: [65, 78, 66, 44, 56, 67, 75],
+              data: this.chartData,
               fill: false,
-            },
-            {
-              label: new Date().getFullYear() - 1,
-              fill: false,
-              backgroundColor: "#fff",
-              borderColor: "#fff",
-              data: [40, 68, 86, 74, 56, 60, 87],
             },
           ],
         },
@@ -128,7 +143,7 @@ export default {
           },
         },
       };
-      var ctx = document.getElementById("line-chart").getContext("2d");
+      var ctx = document.getElementById(this.chartId).getContext("2d");
       window.myLine = new Chart(ctx, config);
     });
   },
