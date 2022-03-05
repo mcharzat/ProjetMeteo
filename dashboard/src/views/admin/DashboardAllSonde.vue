@@ -11,7 +11,7 @@
       <select class="form-control" v-model="parameters" @change="getData">
         <option value="Temperature" >Temperature</option>
         <option value="Pressure" >Pressure</option>
-        <option value="Luminosity">Luminosity</option>
+        <option value="Brightness">Luminosity</option>
     </select>
     </div>
   </div>
@@ -20,7 +20,7 @@
 
 import CardBarChart from '@/components/Cards/CardBarChart.vue';
 export default {
-  created () {
+  mounted () {
     this.getData();
   },
   data () {
@@ -29,10 +29,12 @@ export default {
       parameters: "Temperature",
       sonde: ["027","028","030","031","032"],
       data: [0, 0, 0, 0, 0],
-      date: ""
+      date: "",
+      componentKey: 0,
     }
   },
   methods: {
+
     getData(){
       for(let i =0;i<this.sonde.length;i++){
         fetch("http://piensg"+this.sonde[i]+":8080/data/"+this.parameters.toLowerCase())

@@ -24,6 +24,11 @@
 <script>
 import Chart from "chart.js";
 export default {
+  watch: {
+    graphTitle: function(){
+      setTimeout(function() { window.myBar.update(); },1000);
+    }
+  },
   props: {
     graphTitle: { 
       type: String,
@@ -110,7 +115,9 @@ export default {
         // },
       };
       let ctx = document.getElementById("bar-chart").getContext("2d");
-      window.myBar = new Chart(ctx, config);
+      let myChart = new Chart(ctx, config)
+      window.myBar = myChart;
+      setTimeout(function() { myChart.update(); },1000);
     });
   },
 };

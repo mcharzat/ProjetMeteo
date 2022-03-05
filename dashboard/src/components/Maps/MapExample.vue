@@ -1,89 +1,63 @@
 <template>
-  <div
-    id="map-canvas"
-    class="relative w-full rounded h-600-px"
-    data-lat="40.748817"
-    data-lng="-73.985428"
-  ></div>
+
+  <div id="map"></div>
+
 </template>
+ 
 <script>
+import "leaflet/dist/leaflet.css";
+import L from 'leaflet';
+
 export default {
-  mounted() {
-    let google = window.google;
-    let map = document.getElementById("map-canvas");
-    let lat = map.getAttribute("data-lat");
-    let lng = map.getAttribute("data-lng");
+  methods: {
+    placeData(){
+      console.log(this.coordinate)
+      console.log(this.labels)
+      this.map = L.map("map").setView([51.959, -8.623], 7);
+      L.tileLayer("https://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(this.map);
+      
+      //Place marker
+      this.labels.forEach(sonde => {
+        console.log("Sonde numero"+sonde);
+        console.log("Coordonées : \n"+this.coordinate[sonde].lat+"  "+this.coordinate[sonde].lon+"\n\n\n")
+        L.circleMarker([this.coordinate[sonde][0], this.coordinate[sonde][1]]).addTo(this.map)
+        .bindPopup(sonde);
+        
+      });
 
-    const myLatlng = new google.maps.LatLng(lat, lng);
-    const mapOptions = {
-      zoom: 12,
-      scrollwheel: false,
-      center: myLatlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      styles: [
-        {
-          featureType: "administrative",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#444444" }],
-        },
-        {
-          featureType: "landscape",
-          elementType: "all",
-          stylers: [{ color: "#f2f2f2" }],
-        },
-        {
-          featureType: "poi",
-          elementType: "all",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "road",
-          elementType: "all",
-          stylers: [{ saturation: -100 }, { lightness: 45 }],
-        },
-        {
-          featureType: "road.highway",
-          elementType: "all",
-          stylers: [{ visibility: "simplified" }],
-        },
-        {
-          featureType: "road.arterial",
-          elementType: "labels.icon",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "transit",
-          elementType: "all",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "water",
-          elementType: "all",
-          stylers: [{ color: "#5e72e4" }, { visibility: "on" }],
-        },
-      ],
-    };
-
-    map = new google.maps.Map(map, mapOptions);
-
-    const marker = new google.maps.Marker({
-      position: myLatlng,
-      map: map,
-      animation: google.maps.Animation.DROP,
-      title: "Hello World!",
-    });
-
-    const contentString =
-      '<div class="info-window-content"><h2>Vue Notus</h2>' +
-      "<p>A beautiful UI Kit and Admin for Tailwind CSS. It is Free and Open Source.</p></div>";
-
-    const infowindow = new google.maps.InfoWindow({
-      content: contentString,
-    });
-
-    google.maps.event.addListener(marker, "click", function () {
-      infowindow.open(map, marker);
-    });
+    }
   },
-};
+  props: {
+    labels: { 
+      type: Array,
+      default: function(){return ["No Data"]},
+      required: true
+    },
+    coordinate :{
+      type: Object,
+    }
+  },
+  watch: {
+    coordinate: function(){
+      this.placeData();      
+    }
+  },
+  name: 'Map',
+  data() {
+    return {
+      map: null
+    }
+  },
+  mounted() {
+    console.log("in Mounted")
+    console.log("Data :\n")
+    console.log(Object.values(this.coordinate))
+    console.log(this.coordinate);
+    console.log("Fin data :\n")
+    this.placeData();
+  }
+}
 </script>
+
