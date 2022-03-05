@@ -52,11 +52,6 @@ const influx = new Influx.InfluxDB({
 })
 
 
-// /* GET  */
-// router.get('/:parameterMeteo/:date', function(req, res, next) {
- 
-// });
-
 /* GET  */
 router.get('/:parameterMeteo/:date', function(req, res, next) {
 
@@ -69,7 +64,17 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
 
     if(datesUnix.length == 1){
         paramMeteo.forEach(parametres => {
-            if(parametres == "hygrometry"){
+            if(parametres == "brightness"){
+                parametre = "luminosity"
+                reponse[parametres] = {date:[],value:[]};
+                promises.push(
+                influx.query(`
+                select * from ${parametre}
+                where time >=${datesUnix[0]}
+                `)
+              )
+            }
+            else if(parametres == "hygrometry"){
                 parametre = "humidity"
                 reponse[parametres] = {date:[],value:[]};
                 promises.push(
@@ -110,7 +115,17 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
 
     } else {
         paramMeteo.forEach(parametres => {
-            if(parametres == "hygrometry"){
+            if(parametres == "brightness"){
+                parametre = "luminosity"
+                reponse[parametres] = {date:[],value:[]};
+                promises.push(
+                influx.query(`
+                select * from ${parametre}
+                where time >=${datesUnix[0]} and time <= ${datesUnix[1]}
+                `)
+              )
+            }
+            else if(parametres == "hygrometry"){
                 parametre = "humidity"
                 reponse[parametres] = {date:[],value:[]};
                 promises.push(
@@ -191,8 +206,18 @@ router.get('/:parameterMeteo', function(req, res, next) {
     const reponse = {};
     const promises = [];
     paramMeteo.forEach(parametres => {
+        if(parametres == "brightness"){
+            parametre = "luminosity"
+            reponse[parametres] = {date:[],value:[]};
+            promises.push(
+            influx.query(`
+            select * from ${parametre}
+            where time >=${datesUnix[0]} and time <= ${datesUnix[1]}
+            `)
+          )
+        }
 
-        if(parametres == "hygrometry"){
+        else if(parametres == "hygrometry"){
             parametre = "humidity"
             reponse[parametres] = {date:[],value:[]};
             promises.push(
