@@ -52,7 +52,6 @@ export default {
         data: {
           labels: this.dataLabels,
           datasets: [{
-              label: this.graphTitle,
               fill: true,
               backgroundColor:["#d7baff","#bc8cff","#9345ff","#570dbd","#2f0963"],
               borderColor: ["#d7baff","#bc8cff","#9345ff","#570dbd","#2f0963"],
@@ -60,64 +59,16 @@ export default {
               barThickness: 20,
             }]
         },
-        // options: {
-        //   maintainAspectRatio: false,
-        //   responsive: true,
-        //   tooltips: {
-        //     mode: "index",
-        //     intersect: false,
-        //   },
-        //   hover: {
-        //     mode: "nearest",
-        //     intersect: true,
-        //   },
-        //   legend: {
-        //     labels: {
-        //       fontColor: "rgba(0,0,0,.4)",
-        //     },
-        //     align: "end",
-        //     position: "bottom",
-        //   },
-        //   scales: {
-        //     xAxes: [
-        //       {
-        //         display: false,
-        //         scaleLabel: {
-        //           display: true,
-        //           labelString: "Sonde number",
-        //         },
-        //         gridLines: {
-        //           borderDash: [2],
-        //           borderDashOffset: [2],
-        //           color: "rgba(33, 37, 41, 0.3)",
-        //           zeroLineColor: "rgba(33, 37, 41, 0.3)",
-        //           zeroLineBorderDash: [2],
-        //           zeroLineBorderDashOffset: [2],
-        //         },
-        //       },
-        //     ],
-        //     yAxes: [
-        //       {
-        //         display: true,
-                
-        //         gridLines: {
-        //           borderDash: [2],
-        //           drawBorder: false,
-        //           borderDashOffset: [2],
-        //           color: "rgba(33, 37, 41, 0.2)",
-        //           zeroLineColor: "rgba(33, 37, 41, 0.15)",
-        //           zeroLineBorderDash: [2],
-        //           zeroLineBorderDashOffset: [2],
-        //         },
-        //       },
-        //     ],
-        //   },
-        // },
+        options: {
+          legend: {
+            display:false,
+          },
+        },
       };
       let ctx = document.getElementById("bar-chart").getContext("2d");
       let myChart = new Chart(ctx, config)
       window.myBar = myChart;
-      setTimeout(function() { myChart.update(); },1000);
+      setTimeout(function() { myChart.update(); },100);
     });
   },
 };

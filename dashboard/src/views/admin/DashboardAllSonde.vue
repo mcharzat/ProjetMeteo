@@ -11,7 +11,11 @@
       <select class="form-control" v-model="parameters" @change="getData">
         <option value="Temperature" >Temperature</option>
         <option value="Pressure" >Pressure</option>
-        <option value="Brightness">Luminosity</option>
+        <option value="Brightness">Brightness</option>
+        <option value="Hygrometry">Hygrometry</option>
+        <option value="Rainfall">Rainfall</option>
+        <option value="WindDirection">Wind direction</option>
+        <option value="WindVelocity">Wind velocity</option>
     </select>
     </div>
   </div>
@@ -25,7 +29,7 @@ export default {
   },
   data () {
     return {
-      options: ["Temperature","Pressure","Brightness"],
+   
       parameters: "Temperature",
       sonde: ["027","028","030","031","032"],
       data: [0, 0, 0, 0, 0],
