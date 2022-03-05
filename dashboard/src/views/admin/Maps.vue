@@ -23,35 +23,65 @@ export default {
 
     placeData(){
       // console.log(this.coordinates)
-      console.log(this.sondeCalcul)
+      console.log(this.sonde)
+      console.log(this.coordinates)
       this.map = L.map("map").setView([51.959, -8.623], 3);
       L.tileLayer("https://{s}.tile.osm.org/{z}/{x}/{y}.png", {
           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(this.map);
-      console.log(this.sondeCalcul);
-      console.log(this.sondeCalcul.length);
-      //Place marker
-      for(let i = 0 ; i<this.sondeCalcul.length;i++){
-        console.log("Sonde numero"+this.sondeCalcul[i]);
-        console.log("Coordonées : \n"+this.coordinates[this.sondeCalcul[i]].lat+"  "+this.coordinates[this.sondeCalcul[i]].lon+"\n\n\n")
-        L.circleMarker([this.coordinate[this.sondeCalcul[i]][0], this.coordinate[this.sondeCalcul[i]][1]]).addTo(this.map)
-        .bindPopup(this.sondeCalcul[i]);
-      }
+
+      console.log(this.sondeCalcul)
+      this.sondeCalcul.forEach(sonde => {
+        console.log("Sonde numero"+sonde);
+        console.log("Coordonées : \n"+this.coordinates[sonde][0]+"  "+this.coordinates[sonde][1]+"\n\n\n")
+      
+        L.circleMarker([this.coordinates[sonde][0], this.coordinates[sonde][1]]).addTo(this.map)
+        .bindPopup(sonde);
+      });
+      
+      
+
+
+      // for(let i = 0 ; i<this.sonde.length;i++){
+      //   console.log("Sonde numero"+this.sonde[i]);
+      //   console.log("Coordonées : \n"+this.coordinates[this.sonde[i]][0]+"  "+this.coordinates[this.sonde[i]][1]+"\n\n\n")
+      
+      //   L.circleMarker([this.coordinates[this.sonde[i]][0], this.coordinates[this.sonde[i]][1]]).addTo(this.map)
+      //   .bindPopup(this.sonde[i]);
+      // }
         
         
       
     },
-    getData(){
+    getData: function(){
+
+      this.map = L.map("map").setView([51.959, -8.623], 3);
+      L.tileLayer("https://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(this.map);
+
       for(let i =0;i<this.sonde.length;i++){
         fetch("http://piensg"+this.sonde[i]+":8080/data/gpsposition")
         .then(result => result.json())
         .then(result => { 
-          this.sondeCalcul.push(this.sonde[i])
-          this.coordinates[this.sonde[i]] = [result.gpsposition.value[0].lat,result.gpsposition.value[0].lon];
+         
+          L.circleMarker([result.gpsposition.value[0].lat, result.gpsposition.value[0].lon])
+          .addTo(this.map)
+          .bindPopup(this.sonde[i]);
+
+            //this.sondeCalcul.push(this.sonde[i])
+            //this.coordinates[this.sonde[i]].lat = result.gpsposition.value[0].lat
+            //this.coordinates[this.sonde[i]].lon = result.gpsposition.value[0].lon;
+          
+          //Vue.set(this.coordinates, this.sonde[i], [result.gpsposition.value[0].lat,result.gpsposition.value[0].lon])
+          
         })
         .catch(console.error);
       }
-      this.placeData();
+      // this.$nextTick(()=> {
+      //   //this.placeData();
+      // })
+      
       //this.forceRerender();
     }
   },
@@ -60,9 +90,13 @@ export default {
   },
   data () {
     return {
-      sonde: ["028","031"],
-      sondeCalcul:[],
-      coordinates:{},
+      sonde: ["027","028","030","031"],
+      sondeCalcul: [],
+      coordinates:{
+        "027": {lat:0, lon:0},
+        "028": {lat:0, lon:0},
+        "030": {lat:0, lon:0},
+        "031": {lat:0, lon:0}},
       componentKey: 0,
     }
   },
