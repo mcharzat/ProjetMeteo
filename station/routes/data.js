@@ -278,7 +278,7 @@ router.get('/:parameterMeteo', function(req, res, next) {
             } else if(keys[compteur]=="gpsposition"){
                 for(i=0;i<promesse.length;i++){
                     reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
-                    reponse[paramMeteo[compteur]].value.push({latitude: promesse[i].latitude,lon : promesse[i].longitude,alt: 0});
+                    reponse[paramMeteo[compteur]].value.push({lat: promesse[i].latitude,lon : promesse[i].longitude,alt: 0});
                 }
             } else{
                 for(i=0;i<promesse.length;i++){
