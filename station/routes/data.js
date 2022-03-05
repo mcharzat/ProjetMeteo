@@ -58,6 +58,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
     let paramMeteo = req.params.parameterMeteo.split(",").map(x => x.toLowerCase());
 
     let datesUnix = req.params.date.split(",").map(x => new Date(x).getTime()*1000000);
+    let parametre;
 
     const reponse = {};
     const promises = [];
@@ -206,6 +207,8 @@ router.get('/:parameterMeteo', function(req, res, next) {
     
     const reponse = {};
     const promises = [];
+
+    let parametre;
     paramMeteo.forEach(parametres => {
         if(parametres == "brightness"){
             parametre = "luminosity"
