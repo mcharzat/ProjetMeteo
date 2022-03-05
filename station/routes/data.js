@@ -52,24 +52,30 @@ const influx = new Influx.InfluxDB({
 })
 
 
-// /* GET  */
-// router.get('/:parameterMeteo/:date', function(req, res, next) {
- 
-// });
-
 /* GET  */
 router.get('/:parameterMeteo/:date', function(req, res, next) {
 
     let paramMeteo = req.params.parameterMeteo.split(",").map(x => x.toLowerCase());
 
     let datesUnix = req.params.date.split(",").map(x => new Date(x).getTime()*1000000);
+    let parametre;
 
     const reponse = {};
     const promises = [];
 
     if(datesUnix.length == 1){
         paramMeteo.forEach(parametres => {
-            if(parametres == "hygrometry"){
+            if(parametres == "brightness"){
+                parametre = "luminosity"
+                reponse[parametres] = {date:[],value:[]};
+                promises.push(
+                influx.query(`
+                select * from ${parametre}
+                where time >=${datesUnix[0]}
+                `)
+              )
+            }
+            else if(parametres == "hygrometry"){
                 parametre = "humidity"
                 reponse[parametres] = {date:[],value:[]};
                 promises.push(
@@ -110,7 +116,17 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
 
     } else {
         paramMeteo.forEach(parametres => {
-            if(parametres == "hygrometry"){
+            if(parametres == "brightness"){
+                parametre = "luminosity"
+                reponse[parametres] = {date:[],value:[]};
+                promises.push(
+                influx.query(`
+                select * from ${parametre}
+                where time >=${datesUnix[0]} and time <= ${datesUnix[1]}
+                `)
+              )
+            }
+            else if(parametres == "hygrometry"){
                 parametre = "humidity"
                 reponse[parametres] = {date:[],value:[]};
                 promises.push(
@@ -184,15 +200,29 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
   
 });
 
+
 /* GET  */
 router.get('/:parameterMeteo', function(req, res, next) {
     let paramMeteo = req.params.parameterMeteo.split(",").map(x => x.toLowerCase());
     
     const reponse = {};
     const promises = [];
-    paramMeteo.forEach(parametres => {
 
-        if(parametres == "hygrometry"){
+    let parametre;
+    paramMeteo.forEach(parametres => {
+        if(parametres == "brightness"){
+            parametre = "luminosity"
+            reponse[parametres] = {date:[],value:[]};
+            promises.push(
+            influx.query(`
+            select * from ${parametre}
+            order by time desc
+            limit 1
+            `)
+          )
+        }
+
+        else if(parametres == "hygrometry"){
             parametre = "humidity"
             reponse[parametres] = {date:[],value:[]};
             promises.push(
