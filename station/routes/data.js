@@ -199,6 +199,7 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
   
 });
 
+
 /* GET  */
 router.get('/:parameterMeteo', function(req, res, next) {
     let paramMeteo = req.params.parameterMeteo.split(",").map(x => x.toLowerCase());
