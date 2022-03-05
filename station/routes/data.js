@@ -216,7 +216,8 @@ router.get('/:parameterMeteo', function(req, res, next) {
             promises.push(
             influx.query(`
             select * from ${parametre}
-            where time >=${datesUnix[0]} and time <= ${datesUnix[1]}
+            order by time desc
+            limit 1
             `)
           )
         }
