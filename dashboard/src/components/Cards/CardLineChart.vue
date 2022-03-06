@@ -9,7 +9,7 @@
             Overview
           </h6>
           <h2 class="text-white text-xl font-semibold">
-            Sales value
+            {{ chartTitle }}
           </h2>
         </div>
       </div>
