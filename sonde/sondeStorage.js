@@ -148,8 +148,8 @@ function loop () {
                     source: "piensg031",
                     },
                     fields: { 
-                        latitude: data.loc['geojson'].coordinates[0],
-                        longitude: data.loc['geojson'].coordinates[1]
+                        latitude: data.loc['geojson'].coordinates[1],
+                        longitude: data.loc['geojson'].coordinates[0]
                     },
                     timestamp: new Date(data.datetime).getTime(),
                 }

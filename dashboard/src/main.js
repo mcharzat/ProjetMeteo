@@ -5,6 +5,7 @@ import { createWebHistory, createRouter } from "vue-router";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@/assets/styles/tailwind.css";
+import 'leaflet/dist/leaflet.css';
 
 // mouting point for the whole app
 
@@ -17,9 +18,11 @@ import Admin from "@/layouts/Admin.vue";
 // views for Admin layout
 
 import Dashboard from "@/views/admin/Dashboard.vue";
-import Settings from "@/views/admin/Settings.vue";
-import Tables from "@/views/admin/Tables.vue";
+import DashboardAllSonde from "@/views/admin/DashboardAllSonde.vue";
 import Maps from "@/views/admin/Maps.vue";
+
+
+
 
 // routes
 
@@ -33,12 +36,8 @@ const routes = [
         component: Dashboard,
       },
       {
-        path: "/admin/settings",
-        component: Settings,
-      },
-      {
-        path: "/admin/tables",
-        component: Tables,
+        path: "/admin/dashboardAllSonde",
+        component: DashboardAllSonde,
       },
       {
         path: "/admin/maps",
