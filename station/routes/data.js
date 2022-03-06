@@ -166,6 +166,11 @@ router.get('/:parameterMeteo/:date', function(req, res, next) {
                     reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
                     reponse[paramMeteo[compteur]].value.push({lat: promesse[i].latitude,lon : promesse[i].longitude, alt: 0});
                 }
+            } else if(keys[compteur]=="rainfall"){
+                for(i=0;i<promesse.length;i++){
+                    reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
+                    reponse[paramMeteo[compteur]].value.push(1);
+                }
             } else{
                 for(i=0;i<promesse.length;i++){
                     reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
@@ -244,6 +249,11 @@ router.get('/:parameterMeteo', function(req, res, next) {
                 for(i=0;i<promesse.length;i++){
                     reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
                     reponse[paramMeteo[compteur]].value.push({avg: promesse[i].wind_speed_avg,min: promesse[i].wind_speed_min,max: promesse[i].wind_speed_max});
+                }
+            } else if(keys[compteur]=="rainfall"){
+                for(i=0;i<promesse.length;i++){
+                    reponse[paramMeteo[compteur]].date.push(promesse[i].time._nanoISO);
+                    reponse[paramMeteo[compteur]].value.push(1);
                 }
             } else if(keys[compteur]=="gpsposition"){
                 for(i=0;i<promesse.length;i++){
