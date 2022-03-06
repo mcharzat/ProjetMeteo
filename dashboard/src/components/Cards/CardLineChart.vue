@@ -27,7 +27,7 @@ import Chart from "chart.js";
 
 export default {
   watch: {
-    graphTitle: function(){
+    chartData: function(){
       setTimeout(function() { window.myLine.update(); },1000);
     }
   },

@@ -11,7 +11,7 @@
         </select>
       </div>
       <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
-        <card-line-chart 
+        <card-line-chart v-if="!isLoading"
           measurement="Temperature (°C)"
           chartId="TemperatureChart"
           :chartTitle="temperatureChart"
@@ -20,7 +20,7 @@
         />
       </div>
       <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
-        <card-line-chart 
+        <card-line-chart v-if="!isLoading"
           measurement="Pressure (°C)"
           chartId="PressureChart"
           :chartTitle="pressureChart"
@@ -29,7 +29,7 @@
         />
       </div>
       <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
-        <card-line-chart 
+        <card-line-chart v-if="!isLoading"
           measurement="Hygrometry (°C)"
           chartId="HygrometryChart"
           :chartTitle="hygrometryChart"
@@ -38,7 +38,7 @@
         />
       </div>
       <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
-        <card-line-chart 
+        <card-line-chart v-if="!isLoading"
           measurement="Luminosity (°C)"
           chartId="LuminosityChart"
           :chartTitle="luminosityChart"
@@ -47,7 +47,7 @@
         />
       </div>
       <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
-        <card-line-chart 
+        <card-line-chart v-if="!isLoading"
           measurement="Wind velocity (°C)"
           chartId="WindVelocityChart"
           :chartTitle="windVelocityChart"
@@ -66,6 +66,7 @@ export default {
     return {
       timestamp: "",
       sonde: "piensg031",
+      isLoading: false,
 
       temperatureChart: "Temperature History",
       temperatureTime: [],
@@ -97,9 +98,11 @@ export default {
       let sample = -1;
       const url = "http://" + this.sonde + ":8080/data/Temperature,Pressure,Hygrometry,Luminosity,WindVelocity/";
       console.log(this.sonde);
+      let self = this;
       fetch(url + this.timestamp)
         .then(result => result.json())
         .then(result => {
+          this.isLoading = true;
           const tempTime = result.temperature.date;
           const tempData = result.temperature.value;
 
@@ -115,49 +118,50 @@ export default {
           const windTime = result.windvelocity.date;
           const windData = result.windvelocity.value;
 
-          this.temperatureTime = tempTime.filter(elementTime => 
+          self.temperatureTime = tempTime.filter(elementTime => 
             tempTime.indexOf(elementTime) % (3 * 4) == 0
           );
-          this.temperatureData = tempData.filter(() => {
+          self.temperatureData = tempData.filter(() => {
             sample++;
             return sample % (3 * 4) == 0;
           });
 
-          this.pressureTime = pressTime.filter(elementTime => 
+          self.pressureTime = pressTime.filter(elementTime => 
             pressTime.indexOf(elementTime) % (3 * 4) == 0
           );
-          this.pressureData = pressData.filter(() => {
+          self.pressureData = pressData.filter(() => {
             sample++;
             return sample % (3 * 4) == 0;
           });
 
-          this.hygrometryTime = hygroTime.filter(elementTime => 
+          self.hygrometryTime = hygroTime.filter(elementTime => 
             hygroTime.indexOf(elementTime) % (3 * 4) == 0
           );
-          this.hygrometryData = hygroData.filter(() => {
+          self.hygrometryData = hygroData.filter(() => {
             sample++;
             return sample % (3 * 4) == 0;
           });
 
-          this.luminosityTime = lumTime.filter(elementTime => 
+          self.luminosityTime = lumTime.filter(elementTime => 
             lumTime.indexOf(elementTime) % (3 * 4) == 0
           );
-          this.luminosityData = lumData.filter(() => {
+          self.luminosityData = lumData.filter(() => {
             sample++;
             return sample % (3 * 4) == 0;
           });
 
-          this.windVelocityTime = windTime.filter(elementTime => 
+          self.windVelocityTime = windTime.filter(elementTime => 
             windTime.indexOf(elementTime) % (3 * 4) == 0
           );
           let windAvgData = [];
           windData.forEach(element => 
             windAvgData.push(element.avg)
           );
-          this.windVelocityData = windAvgData.filter(() => {
+          self.windVelocityData = windAvgData.filter(() => {
             sample++;
             return sample % (3 * 4) == 0;
           });
+          this.isLoading = false;
         })
         .catch(console.error);
     },
