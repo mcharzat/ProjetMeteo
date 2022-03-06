@@ -26,6 +26,11 @@
 import Chart from "chart.js";
 
 export default {
+  watch: {
+    graphTitle: function(){
+      setTimeout(function() { window.myLine.update(); },1000);
+    }
+  },
   props: {
     chartId: {
       type: String,
@@ -145,6 +150,7 @@ export default {
       };
       var ctx = document.getElementById(this.chartId).getContext("2d");
       window.myLine = new Chart(ctx, config);
+      setTimeout(function() { window.myLine.update(); },100);
     });
   },
 };
