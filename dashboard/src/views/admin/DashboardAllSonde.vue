@@ -31,7 +31,7 @@ export default {
     return {
    
       parameters: "Temperature",
-      sonde: ["027","028","030","031","032"],
+      sonde: ["028","031","032"],
       data: [0, 0, 0, 0, 0],
       date: "",
       componentKey: 0,
