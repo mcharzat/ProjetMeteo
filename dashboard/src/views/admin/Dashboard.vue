@@ -2,7 +2,7 @@
   <div>
     <div class="flex flex-wrap">
       <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4 z-50"> 
-        <select class="form-control" v-model="sonde">
+        <select class="form-control" v-model="sonde" v-on:change="updateStats">
           <option value="piensg027">piensg027</option>
           <option value="piensg028">piensg028</option>
           <option value="piensg030">piensg030</option>
@@ -160,6 +160,9 @@ export default {
           });
         })
         .catch(console.error);
+    },
+    updateStats () {
+      this.datas();
     },
     getLastWeek () {
       const lastWeek = new Date(Date.now() - (7 * 24 * 60 * 60 * 1000));
