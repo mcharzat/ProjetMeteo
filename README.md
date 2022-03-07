@@ -6,6 +6,11 @@ This project contains the initialisation of the store service, the api service t
 
 This project uses npm package. Therefore run `npm run serve` in station folder.
 
+## Deployment
+
+You can use both services in the folder services to deploy the sonde and the station.
+
+You can
 ## Dashboard
 
 To see the dashboard, go to `http://piensg031:8080`.
@@ -23,3 +28,7 @@ The last data is display in bar charts.
 ### Map page
 
 In the map page, the location of all meteo sondes is displayed on a map.
+
+## Problems
+
+At the end of the project, we wanted to use vue-chartjs instead of chartjs but vue-chartjs is not compatible with our version of VueJS and it was hard to downgrade Vue and all of its dependencies. So the chart dashboard has some problem and the code is not optimize.
