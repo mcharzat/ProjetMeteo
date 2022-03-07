@@ -10,6 +10,13 @@
           <option value="piensg032">piensg032</option>
         </select>
       </div>
+      <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4 z-50"> 
+        <select class="form-control" v-model="duration" v-on:change="updateStats">
+          <option value="week">week</option>
+          <option value="month">month</option>
+          <option value="year">year</option>
+        </select>
+      </div>
       </div> 
       <div id="Charts">
           <div
@@ -153,6 +160,7 @@ export default {
       parameters: ["temperature","pressure","hygrometry","brightness","windvelocity"],
       timestamp: "",
       sonde: "piensg031",
+      duration: "week",
 
       temperatureChart: "Temperature History",
       temperatureTime: [],
@@ -383,12 +391,33 @@ export default {
         // document.body.appendChild(elementChart);
     },
     updateStats () {
+      if (this.duration == "week") {
+        this.getLastWeek();
+      } else if (this.duration == "month"){
+        this.getLastMonth();
+      } else if (this.duration == "year"){
+        this.getLastYear();
+      }
       this.datas();
     },
     getLastWeek () {
       const lastWeek = new Date(Date.now() - (7 * 24 * 60 * 60 * 1000));
       const date = lastWeek.getFullYear() + '-' + ((lastWeek.getMonth()+1) < 10 ? "0" : "") + (lastWeek.getMonth()+1) + '-' + ((lastWeek.getDate()-1) < 10 ? "0" : "") + (lastWeek.getDate());
       const time = lastWeek.getHours() + ":" + (lastWeek.getMinutes() < 10 ? "0" : "") + lastWeek.getMinutes() + ":" + (lastWeek.getSeconds() < 10 ? "0" : "") + lastWeek.getSeconds();
+      const dateTime = date +'T'+ time + 'Z';
+      this.timestamp = dateTime;
+    },
+    getLastMonth () {
+      const lastMonth = new Date(Date.now() - (30 * 24 * 60 * 60 * 1000));
+      const date = lastMonth.getFullYear() + '-' + ((lastMonth.getMonth()+1) < 10 ? "0" : "") + (lastMonth.getMonth()+1) + '-' + ((lastMonth.getDate()-1) < 10 ? "0" : "") + (lastMonth.getDate());
+      const time = lastMonth.getHours() + ":" + (lastMonth.getMinutes() < 10 ? "0" : "") + lastMonth.getMinutes() + ":" + (lastMonth.getSeconds() < 10 ? "0" : "") + lastMonth.getSeconds();
+      const dateTime = date +'T'+ time + 'Z';
+      this.timestamp = dateTime;
+    },
+    getLastYear () {
+      const lastYear = new Date(Date.now() - (52 * 7 * 24 * 60 * 60 * 1000));
+      const date = lastYear.getFullYear() + '-' + ((lastYear.getMonth()+1) < 10 ? "0" : "") + (lastYear.getMonth()+1) + '-' + ((lastYear.getDate()-1) < 10 ? "0" : "") + (lastYear.getDate());
+      const time = lastYear.getHours() + ":" + (lastYear.getMinutes() < 10 ? "0" : "") + lastYear.getMinutes() + ":" + (lastYear.getSeconds() < 10 ? "0" : "") + lastYear.getSeconds();
       const dateTime = date +'T'+ time + 'Z';
       this.timestamp = dateTime;
     }
