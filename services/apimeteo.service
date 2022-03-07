@@ -7,6 +7,7 @@ Group=pi
 WorkingDirectory=/home/pi/ProjetMeteo/station
 #ExecStartPre=/usr/bin/npm install
 ExecStart=/usr/bin/npm start
+Restart=on-abnormal
 
 [Install]
 WantedBy=multi-user.targe
