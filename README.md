@@ -8,9 +8,12 @@ This project uses npm package. Therefore run `npm run serve` in station folder.
 
 ## Deployment
 
-You can use both services in the folder services to deploy the sonde and the station.
+You can use both services in the folder services to deploy the sonde and the station. You have to put those files in /etc/systemd/system of your machine and then run the command: <br>
+```systemctl enable start apimeteo.service```
+```systemctl enable start storedata.service```
 
-You can
+You can also use the command: <br>
+```ǹpm install --save``` in both sonde and server folders and then run the command ```npm start```  in those folder
 ## Dashboard
 
 To see the dashboard, go to `http://piensg031:8080`.
