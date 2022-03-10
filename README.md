@@ -4,7 +4,7 @@ This project contains the initialisation of the store service, the api service t
 
 ## Installation
 
-This project uses npm package. Therefore run `npm run serve` in station folder.
+This project uses npm package. Therefore run `npm install` in all folders.
 
 ## Deployment
 
