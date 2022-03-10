@@ -1,0 +1,13 @@
+[Unit]
+Description=weather data colector
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/ProjetMeteo/sonde
+#ExecStartPre=/usr/bin/npm install
+ExecStart=/usr/bin/npm start
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target
