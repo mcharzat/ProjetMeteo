@@ -13,9 +13,7 @@
         <option value="Pressure" >Pressure</option>
         <option value="Brightness">Brightness</option>
         <option value="Hygrometry">Hygrometry</option>
-        <option value="Rainfall">Rainfall</option>
         <option value="WindDirection">Wind direction</option>
-        <option value="WindVelocity">Wind velocity</option>
     </select>
     </div>
   </div>

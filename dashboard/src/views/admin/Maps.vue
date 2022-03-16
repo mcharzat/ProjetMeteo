@@ -10,7 +10,6 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet';
-//import MapExample from "@/components/Maps/MapExample.vue";
 
 export default {
   methods: {
