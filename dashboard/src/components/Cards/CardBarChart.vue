@@ -45,7 +45,6 @@ export default {
     }
   },
   mounted: function () {
-    console.log(this.graphTitle)
     this.$nextTick(function () {
       let config = {
         type: "bar",
